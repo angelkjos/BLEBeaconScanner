@@ -1,3 +1,39 @@
 <resources>
     <string name="app_name">BLEBeacon</string>
+
+    <string name="scan_modes_low_power">Low Power</string>
+    <string name="scan_modes_balanced">Balanced</string>
+    <string name="scan_modes_low_latency">Low Latency</string>
+    <string name="scan_modes_opportunistic">Opportunistic</string>
+
+    <string-array name="scan_modes" >
+        <item>@string/scan_modes_low_power</item>
+        <item>@string/scan_modes_balanced</item>
+        <item>@string/scan_modes_low_latency</item>
+        <item>@string/scan_modes_opportunistic</item>
+    </string-array>
+
+    <string name="callback_type_all_matches">All Matches</string>
+    <string name="callback_type_first_lost_match">First + Lost Match</string>
+    <string name="callback_type_first_match">First Match</string>
+    <string name="callback_type_lost_match">Lost Match</string>
+
+    <string-array name="callback_type" >
+        <item>@string/callback_type_all_matches</item>
+        <item>@string/callback_type_first_lost_match</item>
+        <item>@string/callback_type_first_match</item>
+        <item>@string/callback_type_lost_match</item>
+    </string-array>
+
+    <string name="num_matches_few_advertisement">Few</string>
+    <string name="num_matches_one_advertisement">One</string>
+    <string name="num_matches_max_advertisement">Max</string>
+
+    <string-array name="num_matches" >
+        <item>@string/num_matches_few_advertisement</item>
+        <item>@string/num_matches_one_advertisement</item>
+        <item>@string/num_matches_max_advertisement</item>
+    </string-array>
+
+    <string name="match_aggressive">Aggressive match</string>
 </resources>

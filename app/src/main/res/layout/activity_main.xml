@@ -6,9 +6,21 @@
     android:layout_height="match_parent"
     tools:context="com.angelkjoseski.blebeacon.MainActivity">
 
+    <Button
+        android:id="@+id/btnStopScan"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="Stop Scan"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.45"
+        app:layout_constraintStart_toEndOf="@+id/editTextResults"
+        app:layout_constraintTop_toBottomOf="@+id/btnStartScan" />
+
     <TextView
         android:id="@+id/textView4"
-        android:layout_width="95dp"
+        android:layout_width="80dp"
         android:layout_height="28dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
@@ -20,7 +32,7 @@
 
     <TextView
         android:id="@+id/textView3"
-        android:layout_width="71dp"
+        android:layout_width="80dp"
         android:layout_height="28dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
@@ -32,7 +44,7 @@
 
     <Spinner
         android:id="@+id/spinMatchNum"
-        android:layout_width="275dp"
+        android:layout_width="0dp"
         android:layout_height="28dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="8dp"
@@ -40,36 +52,34 @@
         android:entries="@array/num_matches"
         android:gravity="right|center_vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintStart_toEndOf="@+id/textView3"
         app:layout_constraintTop_toBottomOf="@+id/spinCallback" />
 
     <Button
-        android:id="@+id/btnToggleScan"
+        android:id="@+id/btnStartScan"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
         android:text="Start Scan"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/editTextResults"
         app:layout_constraintTop_toBottomOf="@+id/textFound" />
 
     <Button
         android:id="@+id/btnTimer"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
         android:text="Timer"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnToggleScan" />
+        app:layout_constraintStart_toEndOf="@+id/editTextResults"
+        app:layout_constraintTop_toBottomOf="@+id/btnStopScan" />
 
     <Spinner
         android:id="@+id/spinCallback"
-        android:layout_width="275dp"
+        android:layout_width="0dp"
         android:layout_height="28dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="8dp"
@@ -82,7 +92,7 @@
 
     <Spinner
         android:id="@+id/spinScanMode"
-        android:layout_width="275dp"
+        android:layout_width="0dp"
         android:layout_height="28dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="8dp"
@@ -95,7 +105,7 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="71dp"
+        android:layout_width="80dp"
         android:layout_height="28dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
@@ -107,7 +117,7 @@
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="71dp"
+        android:layout_width="80dp"
         android:layout_height="28dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
@@ -118,7 +128,7 @@
 
     <CheckBox
         android:id="@+id/cbAggressiveMatch"
-        android:layout_width="352dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
@@ -132,11 +142,11 @@
 
     <EditText
         android:id="@+id/editReportDelay"
-        android:layout_width="241dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="number"
         android:text="1000"
@@ -144,17 +154,35 @@
         app:layout_constraintStart_toEndOf="@+id/textView4"
         app:layout_constraintTop_toBottomOf="@+id/spinMatchNum" />
 
+    <EditText
+        android:id="@+id/editTextResults"
+        android:layout_width="188dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="top"
+        android:hint="Results..."
+        android:inputType="none"
+        android:scrollbars="vertical"
+        android:textIsSelectable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cbAggressiveMatch"
+        app:layout_constraintVertical_bias="1.0" />
+
     <TextView
         android:id="@+id/textFound"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
         android:text="    "
-        app:layout_constraintBottom_toTopOf="@+id/btnToggleScan"
+        app:layout_constraintBottom_toTopOf="@+id/btnStartScan"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cbAggressiveMatch" />
+        app:layout_constraintStart_toEndOf="@+id/editTextResults"
+        app:layout_constraintTop_toBottomOf="@+id/cbAggressiveMatch"
+        app:layout_constraintVertical_bias="0.0" />
 
     <android.support.constraint.Barrier
         android:id="@+id/barrier2"

@@ -5,11 +5,14 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanSettings;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -17,9 +20,12 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,19 +33,9 @@ public class MainActivity extends AppCompatActivity {
 
     BluetoothAdapter mBluetoothAdapter;
 
-    Spinner mScanModeSpinner;
-    Spinner mCallbackSpinner;
-    Spinner mMatchNumSpinner;
-    EditText mReportDelay;
-    CheckBox mAggressiveMatchCheckbox;
-    TextView mTextFound;
+    EditText mTextResults;
 
-    Button mBtnToggleScan;
-    Button mBtnTimer;
-
-    static PendingIntent mPendingIntent;
-    static boolean mScanning;
-
+    static final DateFormat sDF = new SimpleDateFormat("HH:mm");
 
     private static MainActivity sInstance;
 
@@ -57,39 +53,54 @@ public class MainActivity extends AppCompatActivity {
 
         IBeaconResult.setIgnoreMajorMSB(true);
 
-        mScanning = false;
-
         Context context = getApplicationContext();
         BluetoothManager bluetoothManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
 
-        mScanModeSpinner = findViewById(R.id.spinScanMode);
-        mCallbackSpinner = findViewById(R.id.spinCallback);
-        mMatchNumSpinner = findViewById(R.id.spinMatchNum);
-        mReportDelay = findViewById(R.id.editReportDelay);
-        mAggressiveMatchCheckbox = findViewById(R.id.cbAggressiveMatch);
-        mTextFound = findViewById(R.id.textFound);
+        mTextResults = findViewById(R.id.editTextResults);
 
-        mBtnToggleScan = findViewById(R.id.btnToggleScan);
-        mBtnTimer = findViewById(R.id.btnTimer);
+        mTextResults.setFocusable(false);
+        mTextResults.setClickable(true);
 
-        updateFound(false);
-
-        // TODO
-        IBeaconRegionManager.addRegion(new IBeaconRegion("uuid", 120, -40));
-
-        mBtnToggleScan.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!mScanning) {
-                    startBluetoothLowEnergyScanning();
-                } else {
-                    stopBluetoothLowEnergyScanning();
-                }
+        mTextResults.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                return true;
             }
         });
 
-        mBtnTimer.setOnClickListener(new OnClickListener() {
+        mTextResults.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Scan History", mTextResults.getText().toString());
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(getApplicationContext(), "Copied to clipboard.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        updateFound(false, false);
+
+
+        updateFound(false);
+
+        Button btnStartScan = findViewById(R.id.btnStartScan);
+        btnStartScan.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startBluetoothLowEnergyScanning();
+            }
+        });
+
+        Button btnStopScan = findViewById(R.id.btnStopScan);
+        btnStopScan.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopBluetoothLowEnergyScanning();
+            }
+        });
+
+        Button btnTimer = findViewById(R.id.btnTimer);
+        btnTimer.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "Timer...");
@@ -104,7 +115,8 @@ public class MainActivity extends AppCompatActivity {
 
         ScanSettings.Builder settingsBuilder = new ScanSettings.Builder();
 
-        int scanModePos = mScanModeSpinner.getSelectedItemPosition();
+        Spinner scanModeSpinner = findViewById(R.id.spinScanMode);
+        int scanModePos = scanModeSpinner.getSelectedItemPosition();
         switch (scanModePos) {
             case 0:
                 settingsBuilder.setScanMode(ScanSettings.SCAN_MODE_LOW_POWER);
@@ -124,7 +136,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
-        int callbackTypePos = mCallbackSpinner.getSelectedItemPosition();
+        Spinner callbackSpinner = findViewById(R.id.spinCallback);
+        int callbackTypePos = callbackSpinner.getSelectedItemPosition();
         switch (callbackTypePos) {
             case 0:
                 settingsBuilder.setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES);
@@ -144,7 +157,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
-        int matchNumPos = mMatchNumSpinner.getSelectedItemPosition();
+        Spinner matchNumSpinner = findViewById(R.id.spinMatchNum);
+        int matchNumPos = matchNumSpinner.getSelectedItemPosition();
         switch (matchNumPos) {
             case 0:
                 settingsBuilder.setNumOfMatches(ScanSettings.MATCH_NUM_FEW_ADVERTISEMENT);
@@ -160,7 +174,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
-        if (mAggressiveMatchCheckbox.isChecked()) {
+        CheckBox cbAggressiveMatch = findViewById(R.id.cbAggressiveMatch);
+        if (cbAggressiveMatch.isChecked()) {
             settingsBuilder.setMatchMode(ScanSettings.MATCH_MODE_AGGRESSIVE);
             Log.d(TAG, "Aggressive match...");
         } else {
@@ -170,7 +185,8 @@ public class MainActivity extends AppCompatActivity {
 
         int reportDelay = 1000;
         try {
-            reportDelay = Integer.valueOf(mReportDelay.getText().toString());
+            EditText editReportDelay = findViewById(R.id.editReportDelay);
+            reportDelay = Integer.valueOf(editReportDelay.getText().toString());
             Log.d(TAG, "Report delay: " + reportDelay);
         } catch (NumberFormatException e) {
             Log.e(TAG, "Invalid report delay, defaulting to " + reportDelay);
@@ -185,44 +201,34 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "Starting iBeacon scanning...");
         mBluetoothAdapter.getBluetoothLeScanner().startScan(filters, settingsBuilder.build(), getScanIntent());
 
-        mScanning = true;
-        mBtnToggleScan.setText("Stop Scan");
+        addToHistory("Scan started");
     }
 
     private void stopBluetoothLowEnergyScanning() {
-        PendingIntent pendingIntent = getScanIntent();
-
-        if (mScanning && pendingIntent != null) {
-            Log.i(TAG, "Stopping iBeacon scanning...");
-            mBluetoothAdapter.getBluetoothLeScanner().stopScan(pendingIntent);
-        } else {
-            Log.e(TAG, "NOT scanning. Nothing to do here...");
-        }
-
-        mScanning = false;
-        mPendingIntent = null;
-
+        Log.i(TAG, "Stopping iBeacon scanning...");
+        mBluetoothAdapter.getBluetoothLeScanner().stopScan(getScanIntent());
+        addToHistory("Scan stopped");
         MyBroadcastReceiver.getIBeaconManager().clear();
-
-        updateToggleScanButton();
     }
 
-    private void updateToggleScanButton() {
-        mBtnToggleScan.setText(mScanning ? "Stop Scan" : "Start Scan");
+    public void updateFound(boolean found, boolean addHistory) {
+        TextView textFound = findViewById(R.id.textFound);
+        textFound.setText(found ? "Found!!  :)" : "NOT found!  :(");
+        if (addHistory) {
+            addToHistory(found ? "IN" : "OUT");
+        }
     }
 
-    public void updateFound(boolean found) {
-        mTextFound.setText(found ? "Found!!  :)" : "NOT found!  :(");
+    private void addToHistory(String text) {
+        Date currentTime = Calendar.getInstance().getTime();
+        mTextResults.append(sDF.format(currentTime) + " - " + text + "\n");
     }
 
     private PendingIntent getScanIntent() {
-        if (mPendingIntent == null) {
-            Intent intent = new Intent(this, MyBroadcastReceiver.class);
-            intent.putExtra("o-scan", true);
-            mPendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        }
-
-        return mPendingIntent;
+        Intent intent = new Intent(this, MyBroadcastReceiver.class);
+        intent.putExtra("o-scan", true);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return pendingIntent;
     }
 }
 

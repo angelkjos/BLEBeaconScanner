@@ -16,6 +16,10 @@ public class IBeaconRegion {
         return uuid + keyMajor + keyMinor;
     }
 
+    public IBeaconRegion(String uuid) {
+        this(uuid, null, null, 120, -40);
+    }
+
     public IBeaconRegion(String uuid, long ttl) {
         this(uuid, null, null, ttl, -40);
     }

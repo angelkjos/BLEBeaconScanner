@@ -23,18 +23,18 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onEnter(IBeaconResult result, IBeaconRegion region) {
             Log.i(TAG, "Event iBeacon IN: " + result + "  -  match: " + region);
-            if ("2008cf83-ecd7-52e1-a9ff-5f367e8a10cb".equals(result.uuid)) {
+            if ("36e00bee-1a46-52e4-9805-a8b34fe01fc3".equals(result.uuid)) {
                 Log.i(TAG, "FOUND!");
-                MainActivity.getInstace().updateFound(true);
+                MainActivity.getInstace().updateFound(true, true);
             }
         }
 
         @Override
         public void onLeave(IBeaconResult result, IBeaconRegion region) {
             Log.i(TAG, "Event iBeacon OUT: " + result + "  -  match: " + region);
-            if ("2008cf83-ecd7-52e1-a9ff-5f367e8a10cb".equals(result.uuid)) {
+            if ("36e00bee-1a46-52e4-9805-a8b34fe01fc3".equals(result.uuid)) {
                 Log.i(TAG, "LOST!");
-                MainActivity.getInstace().updateFound(false);
+                MainActivity.getInstace().updateFound(false, true);
             }
         }
 
@@ -57,6 +57,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 
         for (ScanResult scanResult : scanResults) {
             IBeaconResult info = new IBeaconResult(scanResult);
+            Log.i(TAG, "Detected: " + info);
             sManager.onResult(info);
         }
     }

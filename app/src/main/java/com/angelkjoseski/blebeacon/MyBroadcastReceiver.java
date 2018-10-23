@@ -15,33 +15,7 @@ import java.util.ArrayList;
 public class MyBroadcastReceiver extends BroadcastReceiver {
     private static final String TAG = MyBroadcastReceiver.class.getSimpleName();
 
-    private static final IBeaconManager sManager = new IBeaconManager(new IBeaconManager.Listener() {
-        @Override
-        public void onDetect(IBeaconResult result, IBeaconRegion region) {
-        }
-
-        @Override
-        public void onEnter(IBeaconResult result, IBeaconRegion region) {
-            Log.i(TAG, "Event iBeacon IN: " + result + "  -  match: " + region);
-            if ("36e00bee-1a46-52e4-9805-a8b34fe01fc3".equals(result.uuid)) {
-                Log.i(TAG, "FOUND!");
-                MainActivity.getInstace().updateFound(true, true);
-            }
-        }
-
-        @Override
-        public void onLeave(IBeaconResult result, IBeaconRegion region) {
-            Log.i(TAG, "Event iBeacon OUT: " + result + "  -  match: " + region);
-            if ("36e00bee-1a46-52e4-9805-a8b34fe01fc3".equals(result.uuid)) {
-                Log.i(TAG, "LOST!");
-                MainActivity.getInstace().updateFound(false, true);
-            }
-        }
-
-        @Override
-        public void onIngored(IBeaconResult result, IBeaconRegion region) {
-        }
-    });
+    private static final IBeaconManager sManager = IBeaconManager.getInstance(new DefaultIBeaconManager());
 
     public static IBeaconManager getIBeaconManager() {
         return sManager;
@@ -49,9 +23,6 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-//        int bleCallbackType = intent.getIntExtra(BluetoothLeScanner.EXTRA_CALLBACK_TYPE, -1);
-//        Log.i(TAG, "BT Event: " + bleCallbackType);
-
         ArrayList<ScanResult> scanResults = intent.getParcelableArrayListExtra(
                 BluetoothLeScanner.EXTRA_LIST_SCAN_RESULT);
 

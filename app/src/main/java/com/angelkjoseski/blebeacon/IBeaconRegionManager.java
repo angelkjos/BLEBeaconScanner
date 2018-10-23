@@ -4,6 +4,7 @@ import android.bluetooth.le.ScanFilter;
 import android.content.res.Resources;
 import android.util.Log;
 
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +12,19 @@ import java.util.Map;
 
 public class IBeaconRegionManager {
 
+    private static final String COMMON_UUID = "f7222a42-5dd5-5ff7-9999-88b0e2407e0d";
     private static Map<String, IBeaconRegion> Filters = new HashMap<>();
+
+    static {
+        IBeaconRegionManager.addRegion(
+                new IBeaconRegion(COMMON_UUID, (short) 1, (short) 3380, 60, -40, "Fitspiration"));
+        IBeaconRegionManager.addRegion(
+                new IBeaconRegion(COMMON_UUID, (short) 1, (short) 16354, 60, -40, "Maurice Wilkes"));
+        IBeaconRegionManager.addRegion(
+                new IBeaconRegion(COMMON_UUID, (short) 1, (short) 4944, 60, -40, "Westfalenstadion"));
+        IBeaconRegionManager.addRegion(
+                new IBeaconRegion(COMMON_UUID, (short) 1, (short) 4939, 60, -40, "Name If you want a rainbow"));
+    }
 
     public static void addRegion(IBeaconRegion region) {
         Filters.put(region.getId(), region);

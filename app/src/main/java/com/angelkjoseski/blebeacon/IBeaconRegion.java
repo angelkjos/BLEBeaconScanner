@@ -3,6 +3,7 @@ package com.angelkjoseski.blebeacon;
 import android.bluetooth.le.ScanFilter;
 
 public class IBeaconRegion {
+    String name;
     public String uuid;
     public Short major;
     public Short minor;
@@ -17,22 +18,22 @@ public class IBeaconRegion {
     }
 
     public IBeaconRegion(String uuid) {
-        this(uuid, null, null, 120, -40);
+        this(uuid, null, null, 120, -40, null);
     }
 
     public IBeaconRegion(String uuid, long ttl) {
-        this(uuid, null, null, ttl, -40);
+        this(uuid, null, null, ttl, -40, null);
     }
 
     public IBeaconRegion(String uuid, long ttl, int powerThreshold) {
-        this(uuid, null, null, ttl, powerThreshold);
+        this(uuid, null, null, ttl, powerThreshold, null);
     }
 
     public IBeaconRegion(String uuid, Short major, long ttl, int powerThreshold) {
-        this(uuid, major, null, ttl, powerThreshold);
+        this(uuid, major, null, ttl, powerThreshold, null);
     }
 
-    public IBeaconRegion(String uuid, Short major, Short minor, long ttl, int powerThreshold) {
+    public IBeaconRegion(String uuid, Short major, Short minor, long ttl, int powerThreshold, String name) {
         this.uuid = uuid;
 
         if (major != null && IBeaconResult.isIgnoreMajorMSB()) {
@@ -45,6 +46,7 @@ public class IBeaconRegion {
         this.ttl = ttl;
         this.powerThreshold = powerThreshold;
         this.scanFilter = IBeaconUtils.buildScanFilter(uuid, major, minor);
+        this.name = name;
     }
 
     public String getId() {

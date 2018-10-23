@@ -80,9 +80,6 @@ public class MainActivity extends AppCompatActivity {
 
         updateFound(false, false);
 
-
-        updateFound(false);
-
         Button btnStartScan = findViewById(R.id.btnStartScan);
         btnStartScan.setOnClickListener(new OnClickListener() {
             @Override

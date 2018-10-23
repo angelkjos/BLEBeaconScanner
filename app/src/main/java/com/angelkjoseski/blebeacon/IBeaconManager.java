@@ -16,14 +16,24 @@ public class IBeaconManager {
         void onIngored(IBeaconResult data, IBeaconRegion region);
     }
 
-    Listener listener;
+    private static IBeaconManager sInstance;
+    private Listener listener;
 
     HashMap<String, Node> map = new HashMap<>();
     Node head = null;
     Node end = null;
 
-    public IBeaconManager(Listener listener) {
+    private IBeaconManager(Listener listener) {
         this.listener = listener;
+    }
+
+    public static IBeaconManager getInstance(Listener listener) {
+        if (sInstance == null) {
+            sInstance = new IBeaconManager(listener);
+        } else {
+            sInstance.listener = listener;
+        }
+        return sInstance;
     }
 
     public IBeaconResult get(String key) {
@@ -38,7 +48,7 @@ public class IBeaconManager {
 
     public Vector<IBeaconResult> getAll(long fromTS) {
         Vector<IBeaconResult> results = new Vector();
-        for(Node node : map.values()) {
+        for (Node node : map.values()) {
             if (node.data.timestamp >= fromTS) {
                 results.add(node.data);
             }

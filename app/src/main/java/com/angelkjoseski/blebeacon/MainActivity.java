@@ -3,13 +3,16 @@ package com.angelkjoseski.blebeacon;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
+import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.ParcelUuid;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -24,6 +27,7 @@ import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -154,47 +158,51 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
-        Spinner matchNumSpinner = findViewById(R.id.spinMatchNum);
-        int matchNumPos = matchNumSpinner.getSelectedItemPosition();
-        switch (matchNumPos) {
-            case 0:
-                settingsBuilder.setNumOfMatches(ScanSettings.MATCH_NUM_FEW_ADVERTISEMENT);
-                Log.d(TAG, "Few matches...");
-                break;
-            case 1:
-                settingsBuilder.setNumOfMatches(ScanSettings.MATCH_NUM_ONE_ADVERTISEMENT);
-                Log.d(TAG, "One match...");
-                break;
-            case 2:
-                settingsBuilder.setNumOfMatches(ScanSettings.MATCH_NUM_MAX_ADVERTISEMENT);
-                Log.d(TAG, "Max matches...");
-                break;
-        }
-
-        CheckBox cbAggressiveMatch = findViewById(R.id.cbAggressiveMatch);
-        if (cbAggressiveMatch.isChecked()) {
-            settingsBuilder.setMatchMode(ScanSettings.MATCH_MODE_AGGRESSIVE);
-            Log.d(TAG, "Aggressive match...");
-        } else {
-            settingsBuilder.setMatchMode(ScanSettings.MATCH_MODE_STICKY);
-            Log.d(TAG, "Sticky match...");
-        }
-
-        int reportDelay = 1000;
-        try {
-            EditText editReportDelay = findViewById(R.id.editReportDelay);
-            reportDelay = Integer.valueOf(editReportDelay.getText().toString());
-            Log.d(TAG, "Report delay: " + reportDelay);
-        } catch (NumberFormatException e) {
-            Log.e(TAG, "Invalid report delay, defaulting to " + reportDelay);
-        }
-        settingsBuilder.setReportDelay(reportDelay);
-
-        Log.d(TAG, "Extra scan settings...");
-        settingsBuilder.setLegacy(false);
+//        Spinner matchNumSpinner = findViewById(R.id.spinMatchNum);
+//        int matchNumPos = matchNumSpinner.getSelectedItemPosition();
+//        switch (matchNumPos) {
+//            case 0:
+//                settingsBuilder.setNumOfMatches(ScanSettings.MATCH_NUM_FEW_ADVERTISEMENT);
+//                Log.d(TAG, "Few matches...");
+//                break;
+//            case 1:
+//                settingsBuilder.setNumOfMatches(ScanSettings.MATCH_NUM_ONE_ADVERTISEMENT);
+//                Log.d(TAG, "One match...");
+//                break;
+//            case 2:
+//                settingsBuilder.setNumOfMatches(ScanSettings.MATCH_NUM_MAX_ADVERTISEMENT);
+//                Log.d(TAG, "Max matches...");
+//                break;
+//        }
+//
+//        CheckBox cbAggressiveMatch = findViewById(R.id.cbAggressiveMatch);
+//        if (cbAggressiveMatch.isChecked()) {
+//            settingsBuilder.setMatchMode(ScanSettings.MATCH_MODE_AGGRESSIVE);
+//            Log.d(TAG, "Aggressive match...");
+//        } else {
+//            settingsBuilder.setMatchMode(ScanSettings.MATCH_MODE_STICKY);
+//            Log.d(TAG, "Sticky match...");
+//        }
+//
+//        int reportDelay = 1000;
+//        try {
+//            EditText editReportDelay = findViewById(R.id.editReportDelay);
+//            reportDelay = Integer.valueOf(editReportDelay.getText().toString());
+//            Log.d(TAG, "Report delay: " + reportDelay);
+//        } catch (NumberFormatException e) {
+//            Log.e(TAG, "Invalid report delay, defaulting to " + reportDelay);
+//        }
+//        settingsBuilder.setReportDelay(reportDelay);
+//
+//        Log.d(TAG, "Extra scan settings...");
+//        settingsBuilder.setLegacy(false);
 
         Log.d(TAG, "Getting filters...");
-        List<ScanFilter> filters = IBeaconRegionManager.getScanFilters();
+        //List<ScanFilter> filters = IBeaconRegionManager.getScanFilters();
+
+        List<ScanFilter> filters = new ArrayList<>();
+        filters.add(new ScanFilter.Builder().setServiceUuid(ParcelUuid.fromString("0000feaa-0000-1000-8000-00805f9b34fb")).build());
+
         Log.i(TAG, "Starting iBeacon scanning...");
         mBluetoothAdapter.getBluetoothLeScanner().startScan(filters, settingsBuilder.build(), getScanIntent());
 
